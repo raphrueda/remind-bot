@@ -1,16 +1,37 @@
 const Discord = require('discord.js');
 const bot = new Discord.Client();
 
+const mysql = require('mysql');
+
 const fs = require('fs');
 const ini = require('ini');
 
 const conf = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
+const token = conf.discord.token;
+const dbconf = conf.database;
 
-let token = conf.discord.token;
+let conn = mysql.createConnection({
+	host: dbconf.host,
+	user: dbconf.user,
+	password: dbconf.password,
+	database: dbconf.db
+});
 
 bot.login(token);
 
-bot.on('ready', () => console.log("I'm ready..."));
+bot.on('ready', () => {
+	console.log("Remind Bot is ready.");
+	console.log("Connected to servers:" + bot.guilds.map(e => e.name).join());
+});
+
+conn.connect((err) => {
+	if (err) throw err;
+	console.log("Successfully connected to MySQL database");
+});
+
+//TODO: populate queue with reminders
+//	prioritise by reminder time
+let reminderQueue = [];
 
 bot.on('message', message => {
 	let msg = message.toString();
@@ -44,6 +65,11 @@ bot.on('message', message => {
 						message.author.send(recallMsg);
 					})
 					.catch(console.error);
+				break;
+			case "getreminders":
+				conn.query("SELECT * FROM Reminders", (err, res, fld) => {
+					
+				});
 				break;
 			case "remindme":
 				//TODO
