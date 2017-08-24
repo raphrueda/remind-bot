@@ -1,8 +1,8 @@
 {
-  "name": "discordbot",
+  "name": "remindbot",
   "version": "1.0.0",
   "description": "",
-  "main": "bot.js",
+  "main": "bot/bot.js",
   "scripts": {
     "start": "nodemon"
   },

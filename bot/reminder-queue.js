@@ -1,25 +1,32 @@
 class Reminder {
 	constructor(time, target, context, comment) {
-		this.time = time;
-		this.target = target;
-		this.context = context;
-		this.comment = comment;
+		this._time = time;
+		this._target = target;
+		this._context = context;
+		this._comment = comment;
 	}
 	
 	get time() {
-		return this.time;
+		return this._time;
 	}
 
 	get target() {
-		return this.target;
+		return this._target;
 	}
 
 	get context() {
-		return this.context;
+		return this._context;
 	}
 
 	get comment() {
-		return this.comment === 'undefined' ? '' : this.comment;
+		return (this._comment === 'undefined') ? '' : this._comment;
+	}
+
+	getInfo() {
+		console.log("alert time: " + this.time + "\n" 
+				+ "target user: " + this.target + "\n" 
+				+ "context: \n" + this.context + "\n" 
+				+ "comment: " + this.comment);
 	}
 }
 
@@ -33,7 +40,7 @@ class Reminders {
 	// add new reminder to queue, sorting by reminder.time
 	// equivalent to pq.push()
 	add(reminder) {
-		this.reminders[next++] = reminder;
+		this.reminders[this.next++] = reminder;
 		heapifyUp.bind(this)();
 	}
 
@@ -42,7 +49,7 @@ class Reminders {
 	nextReminder() {
 		if (this.next === 0) return -1;
 		var nextReminder = this.reminders[0];
-		this.reminders[0] = this.reminders[--next];
+		this.reminders[0] = this.reminders[--this.next];
 		heapifyDown.bind(this)();
 		return nextReminder;
 	}
@@ -66,7 +73,7 @@ function heapifyUp() {
 	let iNew = this.next - 1;
 	let iPrt = getParent(iNew);
 	// until smaller than parent or root
-	while(this.reminders[iNew].time < this.reminders[iPrt].time 
+	while(iPrt >= 0 && this.reminders[iNew].time < this.reminders[iPrt].time 
 		&& iPrt >= 0){
 		let tRem = this.reminders[getParent(iNew)];
 		this.reminders[iPrt] = this.reminders[iNew];
@@ -105,10 +112,10 @@ function heapifyDown() {
 
 // heap helper functions
 
-function getParent(index) return Math.ceil((index/2) - 1);
+function getParent(index) {return Math.ceil((index/2) - 1);}
 
-function getLeftChild(index) return (index*2) + 1;
+function getLeftChild(index) {return (index*2) + 1;}
 
-function getRightChild(index) return (index*2) + 2;
+function getRightChild(index) {return (index*2) + 2;}
 
 module.exports = {Reminder : Reminder, Reminders : Reminders};
