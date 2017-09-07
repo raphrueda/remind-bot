@@ -6,6 +6,7 @@ const mysql = require('mysql');
 const fs = require('fs');
 const ini = require('ini');
 const Reminders = require('./reminder-queue.js');
+const command = require('./command-handler.js');
 
 const conf = ini.parse(fs.readFileSync('./config.ini', 'utf-8'));
 const token = conf.discord.token;
@@ -51,11 +52,8 @@ bot.on('message', message => {
 		switch (op) {
 			// Simple direct message command
 			case "msg":
-				let receiver = cmd[1];
-				let text = cmd[2];
-				bot.fetchUser(receiver)
-					.then(user => user.send(text))
-					.catch(console.error);
+				//TODO: validate command here
+				command.sendDM(bot, cmd[1], cmd[2]);
 				break;
 			// Formats and echoes to the user the last n messages from the channel
 			case "recall": {
